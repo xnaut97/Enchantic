@@ -1,13 +1,21 @@
 package com.github.tezvn.enchantic.impl.item;
 
 import com.github.tezvn.enchantic.api.item.EnchanticItem;
+import com.github.tezvn.enchantic.api.item.ItemEnchantment;
 import com.github.tezvn.enchantic.api.item.UpgradeResult;
 import com.github.tezvn.enchantic.impl.utils.MathUtils;
+import com.google.common.collect.Maps;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class EnchanticItemImpl implements EnchanticItem {
 
@@ -15,18 +23,12 @@ public class EnchanticItemImpl implements EnchanticItem {
 
     private final ItemStack item;
 
-    private final int levelUp;
+    private final Map<String, ItemEnchantment> enchantments;
 
-    private final int maxLevel;
-
-    private final double successRate;
-
-    public EnchanticItemImpl(String id, ItemStack item, int levelUp, int maxLevel, double successRate) {
+    public EnchanticItemImpl(String id, ItemStack item, Map<String, ItemEnchantment> enchantments) {
         this.id = id;
         this.item = item;
-        this.levelUp = levelUp;
-        this.maxLevel = maxLevel;
-        this.successRate = MathUtils.roundDouble(successRate/100, 4);
+        this.enchantments = enchantments;
     }
 
     @Override
@@ -40,28 +42,33 @@ public class EnchanticItemImpl implements EnchanticItem {
     }
 
     @Override
-    public int getLevelUp() {
-        return this.levelUp;
+    public List<ItemEnchantment> getAppliedEnchantments() {
+        return Collections.unmodifiableList(new ArrayList<>(this.enchantments.values()));
     }
 
     @Override
-    public int getMaxLevel() {
-        return this.maxLevel;
+    public List<ItemEnchantment> getByLevel(int level) {
+        return getEnchantments(i -> i.getUpgradeLevel() == level);
     }
 
     @Override
-    public double getSuccessRate() {
-        return this.successRate;
+    public List<ItemEnchantment> getBySuccessRate(double successRate) {
+        return getEnchantments(i -> i.getSuccessRate() == successRate);
     }
 
     @Override
-    public double getFailureRate() {
-        return MathUtils.roundDouble(1 - this.getSuccessRate(), 4);
+    public List<ItemEnchantment> getBySuccessRate(double start, double end) {
+        return getEnchantments(i -> i.getSuccessRate() > start && i.getSuccessRate() < end);
     }
 
     @Override
-    public List<String> getApplyEnchants() {
+    public ItemEnchantment getEnchantment(String name) {
         return null;
+    }
+
+    @Override
+    public boolean hasEnchantment(String name) {
+        return false;
     }
 
     @Override
@@ -71,6 +78,12 @@ public class EnchanticItemImpl implements EnchanticItem {
 
 
         return UpgradeResult.SUCCESS;
+    }
+
+    private List<ItemEnchantment> getEnchantments(Predicate<ItemEnchantment> predicate) {
+        return getAppliedEnchantments().stream()
+                .filter(predicate)
+                .collect(Collectors.toList());
     }
 
     private double getRandomChance() {

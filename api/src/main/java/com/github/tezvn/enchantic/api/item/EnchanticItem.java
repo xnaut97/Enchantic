@@ -14,7 +14,9 @@ public interface EnchanticItem {
 
     List<ItemEnchantment> getByLevel(int level);
 
-    List<ItemEnchantment> getBySuccessRate(double )
+    List<ItemEnchantment> getBySuccessRate(double successRate);
+
+    List<ItemEnchantment> getBySuccessRate(double start, double end);
 
     ItemEnchantment getEnchantment(String name);
 
