@@ -3,17 +3,17 @@ package com.github.tezvn.enchantic.impl.item;
 import com.github.tezvn.enchantic.api.item.EnchanticItem;
 import com.github.tezvn.enchantic.api.item.ItemEnchantment;
 import com.github.tezvn.enchantic.api.item.UpgradeResult;
-import com.github.tezvn.enchantic.impl.utils.MathUtils;
 import com.google.common.collect.Maps;
+import net.advancedplugins.ae.api.AEAPI;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -75,9 +75,30 @@ public class EnchanticItemImpl implements EnchanticItem {
     public UpgradeResult onUpgrade(ItemStack item) {
         if(item == null || item.getType() == Material.AIR)
             return UpgradeResult.ITEM_NULL_OR_AIR;
+        ItemMeta meta = item.getItemMeta();
+        if(meta != null) {
+            meta.getEnchants().forEach((enchant, integer) -> {
+                ItemEnchantment enchantment = getEnchantment(enchant.getKey().getKey());
+                if(enchantment == null)
+                    return;
+                if(getRandomChance() > enchantment.getSuccessRate())
+                    return;
 
-
+            });
+        }
         return UpgradeResult.SUCCESS;
+    }
+
+    private Map<String, Integer> getEnchantment(ItemStack item) {
+        Map<String, Integer> enchants = Maps.newHashMap();
+        enchants.putAll(AEAPI.getEnchantmentsOnItem(item));
+        ItemMeta meta = item.getItemMeta();
+        if(meta != null) {
+            meta.getEnchants().forEach((enchantment, integer) -> {
+                enchants.put(enchantment.getKey().getKey(), integer);
+            });
+        }
+        return enchants;
     }
 
     private List<ItemEnchantment> getEnchantments(Predicate<ItemEnchantment> predicate) {

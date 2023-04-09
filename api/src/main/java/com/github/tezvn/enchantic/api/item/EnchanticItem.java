@@ -2,6 +2,7 @@ package com.github.tezvn.enchantic.api.item;
 
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public interface EnchanticItem {
@@ -18,6 +19,7 @@ public interface EnchanticItem {
 
     List<ItemEnchantment> getBySuccessRate(double start, double end);
 
+    @Nullable
     ItemEnchantment getEnchantment(String name);
 
     boolean hasEnchantment(String name);

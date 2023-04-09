@@ -1,4 +1,6 @@
 package com.github.tezvn.enchantic.api;
 
-public interface EnchanticPlugin {
+import org.bukkit.plugin.Plugin;
+
+public interface EnchanticPlugin extends Plugin {
 }
