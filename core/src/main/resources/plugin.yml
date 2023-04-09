@@ -1,0 +1,4 @@
+name: core
+version: '${project.version}'
+main: com.github.tezvn.enchantic.core.Core
+api-version: 1.16
