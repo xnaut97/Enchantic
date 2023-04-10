@@ -63,48 +63,44 @@ public class EnchanticItemImpl implements EnchanticItem {
 
     @Override
     public ItemEnchantment getEnchantment(String name) {
-        return null;
+        return this.enchantments.getOrDefault(name, null);
     }
 
     @Override
     public boolean hasEnchantment(String name) {
-        return false;
+        return getEnchantment(name) != null;
     }
 
     @Override
     public UpgradeResult onUpgrade(ItemStack item) {
-        if(item == null || item.getType() == Material.AIR)
+        if (item == null || item.getType() == Material.AIR)
             return UpgradeResult.ITEM_NULL_OR_AIR;
         ItemMeta meta = item.getItemMeta();
-        if(meta != null) {
+        if (meta != null) {
             meta.getEnchants().forEach((enchant, integer) -> {
-                ItemEnchantment enchantment = getEnchantment(enchant.getKey().getKey());
-                if(enchantment == null)
-                    return;
-                if(getRandomChance() > enchantment.getSuccessRate())
-                    return;
-
+                ItemEnchantment enchantment = fetchEnchantment(enchant.getKey().getKey());
+                if (enchantment != null)
+                    meta.addEnchant(enchant, integer + enchantment.getUpgradeLevel(), true);
             });
         }
+        AEAPI.getEnchantmentsOnItem(item).forEach((s, level) -> {
+            ItemEnchantment enchantment = fetchEnchantment(s);
+            if (enchantment != null)
+                AEAPI.applyEnchant(s, level + enchantment.getUpgradeLevel(), item);
+        });
         return UpgradeResult.SUCCESS;
-    }
-
-    private Map<String, Integer> getEnchantment(ItemStack item) {
-        Map<String, Integer> enchants = Maps.newHashMap();
-        enchants.putAll(AEAPI.getEnchantmentsOnItem(item));
-        ItemMeta meta = item.getItemMeta();
-        if(meta != null) {
-            meta.getEnchants().forEach((enchantment, integer) -> {
-                enchants.put(enchantment.getKey().getKey(), integer);
-            });
-        }
-        return enchants;
     }
 
     private List<ItemEnchantment> getEnchantments(Predicate<ItemEnchantment> predicate) {
         return getAppliedEnchantments().stream()
                 .filter(predicate)
                 .collect(Collectors.toList());
+    }
+
+    private ItemEnchantment fetchEnchantment(String s) {
+        ItemEnchantment enchantment = getEnchantment(s);
+        return enchantment == null || getRandomChance() > enchantment.getSuccessRate()
+                ? null : enchantment;
     }
 
     private double getRandomChance() {
