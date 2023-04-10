@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import com.github.tezvn.enchantic.api.EnchanticPlugin;
 import com.github.tezvn.enchantic.api.item.EnchanticItem;
 import com.github.tezvn.enchantic.api.item.ItemManager;
+import com.github.tezvn.enchantic.impl.utils.ItemCreator;
 import com.google.common.collect.Maps;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -11,10 +12,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ItemManagerImpl implements ItemManager {
 
@@ -49,7 +47,15 @@ public class ItemManagerImpl implements ItemManager {
         }
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
         config.getKeys(false).forEach(id -> {
-            XMaterial material = XMaterial.matchXMaterial(config.getString(id + ".material", "STICK"));
+            XMaterial material = XMaterial.matchXMaterial(config.getString(id + ".material", "STICK"))
+                    .orElse(XMaterial.STICK);
+            ItemCreator creator = new ItemCreator(Objects.requireNonNull(
+                    XMaterial.matchXMaterial(config.getString(id + ".material", "STICK"))
+                            .orElse(XMaterial.STICK).parseItem()));
+            if(material == XMaterial.PLAYER_HEAD) {
+                
+            }
+
         });
     }
 
