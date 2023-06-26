@@ -13,11 +13,6 @@ gem:
     - "&7Right-click to see applied enchantments"
 # Make item glow
   glow: false
-  level:
-    # Max level reached
-    max: 100
-    # Level up per upgrade
-    up: 5
 # List enchantments that will be applied, included AdvancedEnchant
   applies-enchants:
     # Enchantment name (uppercase/lowercase is not matter)
@@ -25,16 +20,23 @@ gem:
       # Success chance when apply to item
       success-rate: 10.25%
       # Level will be added when success
-      level: 5
+      level:
+        per-upgrade: 5
+        max: 20
       # Downgrade level when upgrade failed
       downgrade-level-on-failed: 1
     power:
       success-rate: 35.20%
-      level: 2
+      level:
+        per-upgrade: 2
+        max: 20
+      downgrade-level-on-failed: 1
     confuse:
       success-rate: 48.15%
-      level: 1
-
+      level:
+        per-upgrade: 1
+        max: 20
+      downgrade-level-on-failed: 1
 
 
 

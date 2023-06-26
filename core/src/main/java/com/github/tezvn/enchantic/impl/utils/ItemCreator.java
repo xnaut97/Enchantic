@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
@@ -95,6 +96,17 @@ public class ItemCreator implements Cloneable {
     public ItemCreator setAmount(int amount) {
         this.item.setAmount(Math.max(0, Math.min(64, amount)));
         return this;
+    }
+
+    public ItemCreator insertLore(int index, String... str) {
+        List<String> list = Lists.newArrayList();
+        for (int i = 0; i < this.lore.size(); i++) {
+            String s = this.lore.get(i);
+            if(i == index)
+                list.addAll(Arrays.asList(str));
+            list.add(s);
+        }
+        return setLore(list);
     }
 
     public ItemCreator addLore(String... str) {

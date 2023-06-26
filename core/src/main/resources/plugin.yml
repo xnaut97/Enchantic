@@ -1,4 +1,27 @@
-name: core
+name: Enchantic
 version: '${project.version}'
-main: com.github.tezvn.enchantic.core.Core
+main: com.github.tezvn.enchantic.impl.EnchanticPluginImpl
 api-version: 1.16
+softdepend:
+  - AdvancedEnchantments
+commands:
+  enchantic:
+    usage: /enchantic
+    aliases:
+      - 'ect'
+permissions:
+  enchantic.*:
+    default: false
+    children:
+      enchantic.command.give: true
+      enchantic.command.items: true
+      enchantic.item.view: true
+      enchantic.reinforce.bypass: true
+  enchantic.command.give:
+    default: op
+  enchantic.command.items:
+    default: op
+  enchantic.admin.view:
+    default: op
+  enchantic.reinforce.bypass:
+    default: op

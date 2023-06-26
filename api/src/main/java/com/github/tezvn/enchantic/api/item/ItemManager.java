@@ -10,5 +10,4 @@ public interface ItemManager {
     @Nullable
     EnchanticItem getItem(String id);
 
-
 }

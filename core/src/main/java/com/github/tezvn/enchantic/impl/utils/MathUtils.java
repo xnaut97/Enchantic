@@ -25,15 +25,28 @@ public class MathUtils {
 		return new BigDecimal(amount).setScale(Math.max(1, scale), RoundingMode.HALF_UP).doubleValue();
 	}
 
-	
+	public static double convertToPercent(double value, int digit) {
+		String str = String.valueOf(Math.max(0, value)/100);
+		int index = 1;
+		String[] split = str.split("");
+		for (int i = 0; i < str.split("").length; i++) {
+			if(split[i].equalsIgnoreCase(".")) {
+				index = i;
+				break;
+			}
+		}
+		return Double.parseDouble(str.substring(0,
+				digit == 0 ? index : Math.min(str.length(), index + digit + 1)));
+	}
+
 	public static int parseInt(String str) {
 		try {
 			return Integer.parseInt(str);
 		} catch (Exception e) {
 			return eval(str);
-		} 
+		}
 	}
-	
+
 	public static int eval(final String str) {
 		return (int) new Object() {
 			int pos = -1, ch;

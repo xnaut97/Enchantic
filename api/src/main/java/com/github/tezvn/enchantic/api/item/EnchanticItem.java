@@ -1,5 +1,6 @@
 package com.github.tezvn.enchantic.api.item;
 
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
@@ -11,19 +12,25 @@ public interface EnchanticItem {
 
     ItemStack getItem();
 
-    List<ItemEnchantment> getAppliedEnchantments();
+    List<EnchantmentData> getAppliedEnchantments();
 
-    List<ItemEnchantment> getByLevel(int level);
+    List<EnchantmentData> getByLevel(int level);
 
-    List<ItemEnchantment> getBySuccessRate(double successRate);
+    List<EnchantmentData> getBySuccessRate(double successRate);
 
-    List<ItemEnchantment> getBySuccessRate(double start, double end);
+    List<EnchantmentData> getBySuccessRate(double start, double end);
 
     @Nullable
-    ItemEnchantment getEnchantment(String name);
+    EnchantmentData getEnchantment(String name);
 
     boolean hasEnchantment(String name);
 
-    UpgradeResult onUpgrade(ItemStack item);
+    boolean canUpgrade(ItemStack item);
+
+    boolean isReachedMax(ItemStack item);
+
+    List<UpgradeResult> onUpgrade(ItemStack item);
+
+    void giveItem(Player player, int amount);
 
 }
